@@ -59,6 +59,13 @@ fun DrawCanvas(pathData: MutableState<PathData>) {
                 detectDragGestures(
                     onDragStart = {
                         tempPath = Path()
+                    },
+                    onDragEnd = {
+                        pathList.add(
+                            pathData.value.copy(
+                                path = tempPath
+                            )
+                        )
                     }
                 ) { change, dragAmount ->
                     tempPath.moveTo(
@@ -69,6 +76,9 @@ fun DrawCanvas(pathData: MutableState<PathData>) {
                         change.position.x,
                         change.position.y
                     )
+                    if(pathList.size>0){
+                        pathList.removeAt(pathList.size - 1)
+                    }
                     pathList.add(
                         pathData.value.copy(
                             path = tempPath
