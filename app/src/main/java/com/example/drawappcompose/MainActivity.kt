@@ -73,7 +73,8 @@ fun DrawCanvas(pathData: MutableState<PathData>) {
                         pathData.value.copy(
                             path = tempPath
                         )
-                 }
+                    )
+                }
             }
     ){
         pathList.forEach{pathData ->
