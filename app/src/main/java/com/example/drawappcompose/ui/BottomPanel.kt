@@ -10,21 +10,31 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.Slider
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun BottomPanel(onClick:(Color)->Unit) {
+fun BottomPanel(onClick:(Color)->Unit, onLineWidthChange: (Float) -> Unit) {
     Column(
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxWidth()
             .background(Color.LightGray),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        ColorList(){ color->
+        ColorList{ color->
             onClick(color)
+        }
+        CustomSlider{lineWidth ->
+            onLineWidthChange(lineWidth)
         }
     }
 }
@@ -54,5 +64,22 @@ fun ColorList(onClick:(Color)->Unit) {
             )
 
         }
+    }
+}
+@Composable
+fun CustomSlider(onChange: (Float) -> Unit){
+    var position by remember {
+        mutableStateOf(0.05f)
+    }
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Text("Line width: ${(position * 100).toInt()}")
+        Slider(
+            value = position,
+            onValueChange = {
+                val tempPos = if (it > 0) it else 0.01f
+                position = tempPos
+                onChange(tempPos * 100)
+            }
+        )
     }
 }

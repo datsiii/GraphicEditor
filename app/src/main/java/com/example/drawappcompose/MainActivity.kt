@@ -16,6 +16,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.tooling.preview.Preview
@@ -33,9 +34,15 @@ class MainActivity : ComponentActivity() {
             DrawAppComposeTheme {
                 Column {
                     DrawCanvas(pathData)
-                    BottomPanel{color ->
+                    BottomPanel(
+                        {color ->
+                            pathData.value = pathData.value.copy(
+                                color = color
+                            )
+                        }
+                    ){lineWidth ->
                         pathData.value = pathData.value.copy(
-                            color = color
+                            lineWidth = lineWidth
                         )
                     }
                 }
@@ -91,7 +98,9 @@ fun DrawCanvas(pathData: MutableState<PathData>) {
             drawPath(
                 pathData.path,
                 color = pathData.color,
-                style = Stroke(5f)
+                style = Stroke(
+                    pathData.lineWidth/*,
+                    cap = StrokeCap.Round*/)
             )
         }
 
@@ -99,18 +108,3 @@ fun DrawCanvas(pathData: MutableState<PathData>) {
 
 }
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    DrawAppComposeTheme {
-        Greeting("Android")
-    }
-}
