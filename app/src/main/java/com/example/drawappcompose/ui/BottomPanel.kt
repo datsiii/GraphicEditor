@@ -1,6 +1,5 @@
 package com.example.drawappcompose.ui
 
-import android.graphics.drawable.Icon
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -28,35 +27,45 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.drawappcompose.R
+import com.example.drawappcompose.ui.theme.LightPurple
 
 @Composable
 fun BottomPanel(
     onClick: (Color) -> Unit,
     onLineWidthChange: (Float) -> Unit,
-    onBackClik: () -> Unit,
-    onCapClick: (StrokeCap) -> Unit
+    onChangeTransparency: (Float) -> Unit,
+    onBackClick: () -> Unit,
+    onCapClick: (StrokeCap) -> Unit,
+    onDownloadClick: () -> Unit
 ) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .background(Color.LightGray),
+            .background(LightPurple),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+
         ColorList{ color->
             onClick(color)
         }
-        CustomSlider{lineWidth ->
+        CustomSlider({lineWidth ->
             onLineWidthChange(lineWidth)
+        }){alpha ->
+            onChangeTransparency(alpha)
         }
-        ButtonPanel({
-            onBackClik()
-        }) {cap ->
+        ButtonPanel(
+            {
+                onBackClick()
+            },
+            {
+                onDownloadClick()
+            }
+        ) {cap ->
             onCapClick(cap)
         }
         Spacer(modifier = Modifier.height(5.dp))
@@ -70,7 +79,7 @@ fun ColorList(onClick:(Color)->Unit) {
         Color.Yellow,
         Color.Green,
         Color.Blue,
-        Color.Magenta,
+        Color.White,
         Color.Black
     )
     LazyRow(
@@ -91,18 +100,35 @@ fun ColorList(onClick:(Color)->Unit) {
     }
 }
 @Composable
-fun CustomSlider(onChange: (Float) -> Unit){
-    var position by remember {
+fun CustomSlider(
+    onChangeWidth: (Float) -> Unit,
+    onChangeTransparency: (Float) -> Unit
+){
+    var positionw by remember {
         mutableStateOf(0.05f)
     }
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Text("Line width: ${(position * 100).toInt()}")
+        Text("Line width: ${(positionw * 100).toInt()}")
         Slider(
-            value = position,
+            value = positionw,
             onValueChange = {
                 val tempPos = if (it > 0) it else 0.01f
-                position = tempPos
-                onChange(tempPos * 100)
+                positionw = tempPos
+                onChangeWidth(tempPos * 100)
+            }
+        )
+    }
+    var positiona by remember {
+        mutableStateOf(1f)
+    }
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Text("Transparency: ${(positiona * 100).toInt()}")
+        Slider(
+            value = positiona,
+            onValueChange = {
+                val tempPos = if (it > 0) it else 0.01f
+                positiona = tempPos
+                onChangeTransparency(tempPos)
             }
         )
     }
@@ -111,6 +137,7 @@ fun CustomSlider(onChange: (Float) -> Unit){
 @Composable
 fun ButtonPanel(
     onClick: () -> Unit,
+    onDownloadClick: () -> Unit,
     onCapClick: (StrokeCap) -> Unit)
 {
     Row(
@@ -120,12 +147,12 @@ fun ButtonPanel(
             Modifier
                 .fillMaxWidth(0.5f)
                 .padding(start = 10.dp, end = 10.dp),
-            horizontalArrangement = Arrangement.SpaceBetween
+            horizontalArrangement = Arrangement.SpaceEvenly
         ) {
             IconButton(
-                modifier = Modifier
+                /*modifier = Modifier
                     .clip(CircleShape)
-                    .background(Color.White),
+                    .background(Color.White),*/
                 onClick = {
                     onClick()
                 }) {
@@ -134,17 +161,29 @@ fun ButtonPanel(
                     contentDescription = null
                 )
             }
+            IconButton(
+                /*modifier = Modifier
+                    .clip(CircleShape)
+                    .background(Color.White),*/
+                onClick = {
+                    onDownloadClick()
+                }) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_download_24),
+                    contentDescription = null
+                )
+            }
         }
         Row(
             Modifier
                 .fillMaxWidth()
                 .padding(end = 10.dp),
-            horizontalArrangement = Arrangement.SpaceBetween
+            horizontalArrangement = Arrangement.SpaceEvenly
         ) {
             IconButton(
-                modifier = Modifier
+                /*modifier = Modifier
                     .clip(CircleShape)
-                    .background(Color.White),
+                    .background(Color.White),*/
                 onClick = {
                     onCapClick(StrokeCap.Round)
                 }) {
@@ -154,9 +193,9 @@ fun ButtonPanel(
                 )
             }
             IconButton(
-                modifier = Modifier
+                /*modifier = Modifier
                     .clip(CircleShape)
-                    .background(Color.White),
+                    .background(Color.White),*/
                 onClick = {
                     onCapClick(StrokeCap.Butt)
                 }) {
@@ -166,9 +205,9 @@ fun ButtonPanel(
                 )
             }
             IconButton(
-                modifier = Modifier
+                /*modifier = Modifier
                     .clip(CircleShape)
-                    .background(Color.White),
+                    .background(Color.White),*/
                 onClick = {
                     onCapClick(StrokeCap.Square)
                 }) {
