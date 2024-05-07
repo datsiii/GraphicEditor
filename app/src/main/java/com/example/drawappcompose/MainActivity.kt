@@ -12,8 +12,11 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ExperimentalComposeApi
 import androidx.compose.runtime.MutableState
@@ -30,8 +33,10 @@ import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.drawappcompose.ui.BottomPanel
 import com.example.drawappcompose.data.PathData
+import com.example.drawappcompose.login.LoginViewModel
 import com.example.drawappcompose.ui.theme.DrawAppComposeTheme
 import dev.shreyaspatil.capturable.capturable
 import dev.shreyaspatil.capturable.controller.CaptureController
@@ -40,8 +45,7 @@ import kotlinx.coroutines.launch
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
-
-//import dev.shreyaspatil.capturableView.CapturableView
+import com.example.drawappcompose.home.DrawCanvas
 
 
 class MainActivity : ComponentActivity() {
@@ -52,6 +56,7 @@ class MainActivity : ComponentActivity() {
             /*val fs = Firebase.firestore
             fs.collection("draws")
                 .document().set(mapOf("name" to "draw"))*/
+            val loginViewModel = viewModel(modelClass = LoginViewModel::class.java)
             val scope = rememberCoroutineScope()
             val pathData = remember {
                 mutableStateOf(PathData())
@@ -61,7 +66,9 @@ class MainActivity : ComponentActivity() {
             }
 
             DrawAppComposeTheme {
+
                 Column {
+                    Navigation(loginViewModel = loginViewModel)
                     val captureController = DrawCanvas(pathData, pathList)
                     BottomPanel(
                         { color ->
@@ -144,73 +151,5 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-@OptIn(ExperimentalComposeUiApi::class)
-@Composable
-fun DrawCanvas(
-    pathData: MutableState<PathData>,
-    pathList: SnapshotStateList<PathData>
-): CaptureController {
-    var tempPath = Path()
-    val captureController = rememberCaptureController()
-    Column(modifier = Modifier.capturable(captureController)) {
-        Canvas(
-            modifier = Modifier
-                /*.drawWithContent {  }*/
-                .background(Color.White)
-                .fillMaxWidth()
-                .fillMaxHeight(0.7f)
-                .pointerInput(true) {
-                    detectDragGestures(
-                        onDragStart = {
-                            pathList.add(
-                                pathData.value.copy(
-                                    path = tempPath
-                                )
-                            )
-                            tempPath = Path()
-                        },
-                        onDragEnd = {
-                            pathList.add(
-                                pathData.value.copy(
-                                    path = tempPath
-                                )
-                            )
-                        }
-                    ) { change, dragAmount ->
-                        tempPath.moveTo(
-                            change.position.x - dragAmount.x,
-                            change.position.y - dragAmount.y
-                        )
-                        tempPath.lineTo(
-                            change.position.x,
-                            change.position.y
-                        )
-                        if (pathList.size > 0) {
-                            pathList.removeAt(pathList.size - 1)
-                        }
-                        pathList.add(
-                            pathData.value.copy(
-                                path = tempPath
-                            )
-                        )
-                    }
-                }
-        ) {
-            pathList.forEach { pathData ->
-                drawPath(
-                    pathData.path,
-                    color = pathData.color,
-                    style = Stroke(
-                        pathData.lineWidth,
-                        cap = pathData.cap
-                    ),
-                    alpha = pathData.alpha
-                )
-            }
 
-        }
-    }
-    return captureController
-
-}
 

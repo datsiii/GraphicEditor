@@ -204,7 +204,7 @@ fun SignUpScreen(
         )
 
         Button(onClick = { loginViewModel?.createUser(context) }) {
-            Text(text = "Sign In")
+            Text(text = "Sign Up")
         }
         Spacer(modifier = Modifier.size(16.dp))
 
