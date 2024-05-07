@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
+    alias(libs.plugins.gms)
 }
 
 android {
@@ -61,8 +62,12 @@ dependencies {
     implementation(libs.androidx.material3)
     //implementation("androidx.datastore:datastore-core:1.1.0")
     //implementation("androidx.datastore:datastore-preferences:1.1.0")
-    implementation("dev.shreyaspatil:capturable:2.1.0")
-    implementation("io.coil-kt:coil-compose:2.2.2")
+    implementation(libs.capturable)
+    implementation(libs.coil.compose)
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.firestore)
+    implementation(libs.firebase.auth.ktx)
+    implementation(libs.androidx.navigation.compose)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

@@ -13,6 +13,7 @@ import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ExperimentalComposeApi
 import androidx.compose.runtime.MutableState
@@ -28,8 +29,9 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.unit.dp
 import com.example.drawappcompose.ui.BottomPanel
-import com.example.drawappcompose.ui.PathData
+import com.example.drawappcompose.data.PathData
 import com.example.drawappcompose.ui.theme.DrawAppComposeTheme
 import dev.shreyaspatil.capturable.capturable
 import dev.shreyaspatil.capturable.controller.CaptureController
@@ -47,6 +49,9 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
+            /*val fs = Firebase.firestore
+            fs.collection("draws")
+                .document().set(mapOf("name" to "draw"))*/
             val scope = rememberCoroutineScope()
             val pathData = remember {
                 mutableStateOf(PathData())
@@ -59,30 +64,30 @@ class MainActivity : ComponentActivity() {
                 Column {
                     val captureController = DrawCanvas(pathData, pathList)
                     BottomPanel(
-                        {color ->
+                        { color ->
                             pathData.value = pathData.value.copy(
                                 color = color
                             )
                         },
-                        {lineWidth ->
+                        { lineWidth ->
                             pathData.value = pathData.value.copy(
                                 lineWidth = lineWidth
                             )
                         },
-                        {alpha ->
+                        { alpha ->
                             pathData.value = pathData.value.copy(
                                 alpha = alpha
                             )
 
                         },
                         { ->
-                            pathList.removeIf{pathD ->
-                                pathList[pathList.size-1] == pathD
+                            pathList.removeIf { pathD ->
+                                pathList[pathList.size - 1] == pathD
 
                             }
                         },
 
-                        {cap ->
+                        { cap ->
                             pathData.value = pathData.value.copy(
                                 cap = cap
                             )
@@ -95,13 +100,15 @@ class MainActivity : ComponentActivity() {
                             val bitmapAsync = captureController.captureAsync()
                             try {
                                 val imageBitmap = bitmapAsync.await()
-                                Toast.makeText(this@MainActivity, "download",Toast.LENGTH_SHORT ).show()
+                                Toast.makeText(this@MainActivity, "download", Toast.LENGTH_SHORT)
+                                    .show()
                                 // Do something with `bitmap`.
                                 val bitmap = imageBitmap.asAndroidBitmap()
                                 saveBitmapToStorage(bitmap)
                             } catch (error: Throwable) {
                                 // Error occurred, do something.
-                                Toast.makeText(this@MainActivity, "error",Toast.LENGTH_SHORT ).show()
+                                Toast.makeText(this@MainActivity, "error", Toast.LENGTH_SHORT)
+                                    .show()
                             }
                         }
                     }
@@ -109,10 +116,12 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+
     private fun saveBitmapToStorage(bitmap: Bitmap) {
         val timestamp = System.currentTimeMillis() // Get current timestamp
         val filename = "image_$timestamp.jpg" // Construct filename with timestamp
-        val externalDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
+        val externalDir =
+            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
 
         try {
             externalDir?.let { dir ->
@@ -149,7 +158,7 @@ fun DrawCanvas(
                 /*.drawWithContent {  }*/
                 .background(Color.White)
                 .fillMaxWidth()
-                .fillMaxHeight(0.73f)
+                .fillMaxHeight(0.7f)
                 .pointerInput(true) {
                     detectDragGestures(
                         onDragStart = {
@@ -176,7 +185,7 @@ fun DrawCanvas(
                             change.position.x,
                             change.position.y
                         )
-                        if(pathList.size>0){
+                        if (pathList.size > 0) {
                             pathList.removeAt(pathList.size - 1)
                         }
                         pathList.add(

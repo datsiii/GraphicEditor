@@ -1,4 +1,4 @@
-package com.example.drawappcompose.ui
+package com.example.drawappcompose.data
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path

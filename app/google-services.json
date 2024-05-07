@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "904919901409",
+    "project_id": "drawapp-16067",
+    "storage_bucket": "drawapp-16067.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:904919901409:android:76a37c8c99be57936543a0",
+        "android_client_info": {
+          "package_name": "com.example.drawappcompose"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDLc6axphl4cbt2MvoV06c_qZQn40Pt-3g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
