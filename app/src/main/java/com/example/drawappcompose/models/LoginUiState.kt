@@ -1,4 +1,4 @@
-package com.example.drawappcompose.data
+package com.example.drawappcompose.models
 
 data class LoginUiState(
     val userName: String = "",

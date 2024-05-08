@@ -7,7 +7,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.drawappcompose.data.LoginUiState
+import com.example.drawappcompose.models.LoginUiState
 import com.example.drawappcompose.repository.AuthRepository
 import kotlinx.coroutines.launch
 
