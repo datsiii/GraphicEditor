@@ -1,6 +1,8 @@
 package com.example.drawappcompose.repository
 
+import androidx.compose.runtime.MutableState
 import com.example.drawappcompose.models.Draws
+import com.example.drawappcompose.models.PathData
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.CollectionReference
@@ -15,7 +17,7 @@ import kotlinx.coroutines.flow.callbackFlow
 const val DRAWS_COLLECTION_REF = "draws"
 
 class StorageRepository() {
-    val user = Firebase.auth.currentUser
+    fun user() = Firebase.auth.currentUser
     fun hasUser(): Boolean = Firebase.auth.currentUser != null
 
     fun getUserId(): String = Firebase.auth.currentUser?.uid.orEmpty()
@@ -103,12 +105,13 @@ class StorageRepository() {
 
     fun updateDraw(
         title: String,
-        draw: String,
+        draw: MutableState<PathData>?,
         drawId: String,
         onResult: (Boolean) -> Unit
     ) {
         val updateData = hashMapOf<String, Any>(
             "title" to title,
+            //"drawdata" to draw
             //......
         )
         drawsRef.document(drawId)
@@ -118,6 +121,8 @@ class StorageRepository() {
             }
 
     }
+
+    fun signOut() = Firebase.auth.signOut()
 
 }
 

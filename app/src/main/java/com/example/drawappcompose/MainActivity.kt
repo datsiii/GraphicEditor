@@ -15,6 +15,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.drawappcompose.detail.DetailViewModel
 import com.example.drawappcompose.ui.BottomPanel
 import com.example.drawappcompose.models.PathData
 import com.example.drawappcompose.login.LoginViewModel
@@ -23,7 +24,8 @@ import kotlinx.coroutines.launch
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
-import com.example.drawappcompose.home.DrawCanvas
+import com.example.drawappcompose.detail.DrawCanvas
+import com.example.drawappcompose.home.HomeViewModel
 
 
 class MainActivity : ComponentActivity() {
@@ -35,6 +37,9 @@ class MainActivity : ComponentActivity() {
             fs.collection("draws")
                 .document().set(mapOf("name" to "draw"))*/
             val loginViewModel = viewModel(modelClass = LoginViewModel::class.java)
+            val detailViewModel = viewModel(modelClass = DetailViewModel::class.java)
+            val homeViewModel = viewModel(modelClass = HomeViewModel::class.java)
+
             val scope = rememberCoroutineScope()
             val pathData = remember {
                 mutableStateOf(PathData())
@@ -45,7 +50,7 @@ class MainActivity : ComponentActivity() {
 
             DrawAppComposeTheme {
                 Column {
-                    Navigation(loginViewModel = loginViewModel)
+                    Navigation(loginViewModel = loginViewModel, detailViewModel = detailViewModel, homeViewModel = homeViewModel)
                     val captureController = DrawCanvas(pathData, pathList)
                     BottomPanel(
                         { color ->

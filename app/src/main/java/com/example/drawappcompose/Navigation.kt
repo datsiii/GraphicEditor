@@ -1,14 +1,22 @@
 package com.example.drawappcompose
 
 import androidx.compose.runtime.Composable
+import androidx.navigation.NavArgument
+import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import androidx.navigation.navigation
+import com.example.drawappcompose.detail.DetailViewModel
 import com.example.drawappcompose.home.Home
+import com.example.drawappcompose.home.HomeViewModel
 import com.example.drawappcompose.login.LoginScreen
 import com.example.drawappcompose.login.LoginViewModel
 import com.example.drawappcompose.login.SignUpScreen
+import com.example.drawappcompose.detail.DetailScreen
 
 enum class LoginRoutes {
     SignUp,
@@ -20,24 +28,46 @@ enum class HomeRoutes {
     Detail
 }
 
+enum class NestedRoutes {
+    Main,
+    Login
+}
+
 @Composable
 fun Navigation(
     navController: NavHostController = rememberNavController(),
-    loginViewModel: LoginViewModel
+    loginViewModel: LoginViewModel,
+    detailViewModel: DetailViewModel,
+    homeViewModel: HomeViewModel
 ) {
     NavHost(
         navController = navController,
-        startDestination = LoginRoutes.SignIn.name
+        startDestination = NestedRoutes.Main.name
+    ) {
+        authGraph(navController, loginViewModel)
+        homeGraph(navController = navController, detailViewModel, homeViewModel)
+    }
+
+}
+
+fun NavGraphBuilder.authGraph(
+    navController: NavHostController,
+    loginViewModel: LoginViewModel
+) {
+    navigation(
+        startDestination = LoginRoutes.SignIn.name,
+        route = NestedRoutes.Login.name
     ) {
         composable(route = LoginRoutes.SignIn.name) {
-            LoginScreen(onNavToHomePage = {
-                navController.navigate(HomeRoutes.Home.name) {
-                    launchSingleTop = true
-                    popUpTo(route = LoginRoutes.SignIn.name) {
-                        inclusive = true
+            LoginScreen(
+                onNavToHomePage = {
+                    navController.navigate(NestedRoutes.Main.name) {
+                        launchSingleTop = true
+                        popUpTo(route = LoginRoutes.SignIn.name) {
+                            inclusive = true
+                        }
                     }
-                }
-            },
+                },
                 loginViewModel = loginViewModel
             ) {
                 navController.navigate(LoginRoutes.SignUp.name) {
@@ -50,23 +80,71 @@ fun Navigation(
         }
 
         composable(route = LoginRoutes.SignUp.name) {
-            SignUpScreen(onNavToHomePage = {
-                navController.navigate(HomeRoutes.Home.name) {
-                    popUpTo(LoginRoutes.SignUp.name) {
-                        inclusive = true
+            SignUpScreen(
+                onNavToHomePage = {
+                    navController.navigate(NestedRoutes.Main.name) {
+                        popUpTo(LoginRoutes.SignUp.name) {
+                            inclusive = true
+                        }
                     }
-                }
-            },
+                },
                 loginViewModel = loginViewModel
             ) {
                 navController.navigate(LoginRoutes.SignIn.name)
             }
         }
 
-        composable(route = HomeRoutes.Home.name){
-            Home()
+    }
+}
+
+fun NavGraphBuilder.homeGraph(
+    navController: NavHostController,
+    detailViewModel: DetailViewModel,
+    homeViewModel: HomeViewModel
+) {
+    navigation(
+        startDestination = HomeRoutes.Home.name,
+        route = NestedRoutes.Main.name
+    ) {
+        composable(HomeRoutes.Home.name) {
+            Home(
+                homeViewModel = homeViewModel,
+                onDrawClick = { drawId ->
+                    navController.navigate(
+                        HomeRoutes.Detail.name + "?id=$drawId"
+                    ) {
+                        launchSingleTop = true
+                    }
+
+                },
+                navToDetailScreen = {
+                    navController.navigate(HomeRoutes.Detail.name)
+                }) {
+                navController.navigate(NestedRoutes.Login.name) {
+                    launchSingleTop = true
+                    popUpTo(0) {
+                        inclusive = true
+                    }
+                }
+
+            }
+        }
+
+        composable(
+            route = HomeRoutes.Detail.name + "?id={id}",
+            arguments = listOf(navArgument("id") {
+                type = NavType.StringType
+                defaultValue = ""
+            })
+        ) { entry ->
+            DetailScreen(
+                detailViewModel = detailViewModel,
+                drawId = entry.arguments?.getString("id") as String
+            ) {
+                navController.navigateUp()
+            }
+
         }
     }
-
 
 }
