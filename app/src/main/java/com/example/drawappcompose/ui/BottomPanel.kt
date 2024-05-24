@@ -26,6 +26,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
@@ -33,6 +34,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.drawappcompose.R
 import com.example.drawappcompose.ui.theme.LightPurple
+import io.mhssn.colorpicker.ColorPicker
+import io.mhssn.colorpicker.ColorPickerType
 
 @Composable
 fun BottomPanel(
@@ -72,8 +75,20 @@ fun BottomPanel(
     }
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun ColorList(onClick:(Color)->Unit) {
+    var pickedColor = Color.Black
+    /*ColorPicker(
+        type = ColorPickerType.Ring(
+            ringWidth = 10.dp,
+            previewRadius = 80.dp,
+            showAlphaBar = false,
+            showColorPreview = true
+        )
+    ) {color ->
+        pickedColor = color
+    }*/
     val colors = listOf(
         Color.Red,
         Color.Yellow,
@@ -92,7 +107,7 @@ fun ColorList(onClick:(Color)->Unit) {
                     .clickable {
                         onClick(color)
                     }
-                    .size(40.dp)
+                    .size(30.dp)
                     .background(color, CircleShape)
             )
 

@@ -33,104 +33,21 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            /*val fs = Firebase.firestore
-            fs.collection("draws")
-                .document().set(mapOf("name" to "draw"))*/
             val loginViewModel = viewModel(modelClass = LoginViewModel::class.java)
             val detailViewModel = viewModel(modelClass = DetailViewModel::class.java)
             val homeViewModel = viewModel(modelClass = HomeViewModel::class.java)
 
             val scope = rememberCoroutineScope()
-            val pathData = remember {
-                mutableStateOf(PathData())
-            }
-            val pathList = remember {
-                mutableStateListOf(PathData())
-            }
 
             DrawAppComposeTheme {
                 Column {
                     Navigation(loginViewModel = loginViewModel, detailViewModel = detailViewModel, homeViewModel = homeViewModel)
-                    val captureController = DrawCanvas(pathData, pathList)
-                    BottomPanel(
-                        { color ->
-                            pathData.value = pathData.value.copy(
-                                color = color
-                            )
-                        },
-                        { lineWidth ->
-                            pathData.value = pathData.value.copy(
-                                lineWidth = lineWidth
-                            )
-                        },
-                        { alpha ->
-                            pathData.value = pathData.value.copy(
-                                alpha = alpha
-                            )
 
-                        },
-                        { ->
-                            pathList.removeIf { pathD ->
-                                pathList[pathList.size - 1] == pathD
-
-                            }
-                        },
-
-                        { cap ->
-                            pathData.value = pathData.value.copy(
-                                cap = cap
-                            )
-
-                        }
-                    )
-                    {
-                        // Capture content
-                        scope.launch {
-                            val bitmapAsync = captureController.captureAsync()
-                            try {
-                                val imageBitmap = bitmapAsync.await()
-                                Toast.makeText(this@MainActivity, "download", Toast.LENGTH_SHORT)
-                                    .show()
-                                // Do something with `bitmap`.
-                                val bitmap = imageBitmap.asAndroidBitmap()
-                                saveBitmapToStorage(bitmap)
-                            } catch (error: Throwable) {
-                                // Error occurred, do something.
-                                Toast.makeText(this@MainActivity, "error", Toast.LENGTH_SHORT)
-                                    .show()
-                            }
-                        }
-                    }
                 }
             }
         }
     }
 
-    private fun saveBitmapToStorage(bitmap: Bitmap) {
-        val timestamp = System.currentTimeMillis() // Get current timestamp
-        val filename = "image_$timestamp.jpg" // Construct filename with timestamp
-        val externalDir =
-            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
-
-        try {
-            externalDir?.let { dir ->
-                val file = File(dir, filename)
-                val fos = FileOutputStream(file)
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos)
-                fos.close()
-                // Notify media scanner to update the media store
-                MediaScannerConnection.scanFile(
-                    this@MainActivity,
-                    arrayOf(file.absolutePath),
-                    arrayOf("image/jpeg"),
-                    null
-                )
-
-            }
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
-    }
 }
 
 

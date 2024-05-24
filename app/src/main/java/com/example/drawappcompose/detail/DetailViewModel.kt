@@ -1,12 +1,15 @@
 package com.example.drawappcompose.detail
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.media.MediaScannerConnection
 import android.os.Environment
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.currentCompositionLocalContext
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
 import com.example.drawappcompose.models.DetailUiState
 import com.example.drawappcompose.models.Draws
@@ -19,10 +22,9 @@ import java.io.FileOutputStream
 import java.io.IOException
 
 class DetailViewModel(
-    private val repository: StorageRepository = StorageRepository()
+    private val repository: StorageRepository = StorageRepository(),
 ) : ViewModel() {
     var detailUiState by mutableStateOf(DetailUiState())
-
     private val hasUser: Boolean
         get() = repository.hasUser()
 
@@ -88,6 +90,7 @@ class DetailViewModel(
     fun resetState() {
         detailUiState = DetailUiState()
     }
+
 
 
 }
