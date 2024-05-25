@@ -1,6 +1,8 @@
 package com.example.drawappcompose.repository
 
+import android.graphics.Bitmap
 import androidx.compose.runtime.MutableState
+import androidx.compose.ui.graphics.ImageBitmap
 import com.example.drawappcompose.models.Draws
 import com.example.drawappcompose.models.PathData
 import com.google.firebase.Timestamp
@@ -72,15 +74,15 @@ class StorageRepository() {
     fun addDraw(
         userId: String = "",
         title: String = "",
-        //image:,
+        drawImage: ImageBitmap? = null,
         timestamp: Timestamp = com.google.firebase.Timestamp.now(),
-        //colorIndex: Int = 0,
         onComplete: (Boolean) -> Unit,
     ) {
         val documentId = drawsRef.document().id
         val draw = Draws(
             userId,
             title,
+            drawImage,
             timestamp,
             documentId = documentId
         )
@@ -106,13 +108,14 @@ class StorageRepository() {
     fun updateDraw(
         title: String,
         draw: MutableState<PathData>?,
+        drawImage: ImageBitmap?,
         drawId: String,
         onResult: (Boolean) -> Unit
     ) {
         val updateData = hashMapOf<String, Any>(
             "title" to title,
-            //"drawdata" to draw
-            //......
+            "draw-data" to (draw?.value ?: ""),
+            "draw-image" to (drawImage ?: "")
         )
         drawsRef.document(drawId)
             .update(updateData)

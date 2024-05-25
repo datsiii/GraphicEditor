@@ -105,14 +105,16 @@ fun DetailScreen(
     Scaffold(
         //scaffoldState = scaffoldState
         floatingActionButton = {
-            AnimatedVisibility(visible = isFormsNotBlank) {
-                FloatingActionButton(onClick = {
-                    if (isDrawIdNotBlank) {
-                        detailViewModel?.updateDraw(drawId)
-                    } else {
-                        detailViewModel?.addDraw()
+            AnimatedVisibility(visible = true) {
+                FloatingActionButton(
+                    onClick = {
+                        if (isDrawIdNotBlank) {
+                            detailViewModel?.updateDraw(drawId)
+                        } else {
+                            detailViewModel?.addDraw()
+                        }
                     }
-                }) {
+                ) {
                     Icon(imageVector = icon, contentDescription = null)
                 }
             }

@@ -1,5 +1,7 @@
 package com.example.drawappcompose.home
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.combinedClickable
@@ -58,6 +60,11 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.platform.LocalContext
+
+import java.io.ByteArrayOutputStream
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -159,7 +166,7 @@ fun Home(
                                         openDialog = false
                                     },
                                     colors = ButtonDefaults.buttonColors(
-                                        contentColor = Color.Red
+                                        //contentColor = Color.Red
                                     ),
                                 ) {
                                     Text(text = "Delete")
@@ -203,6 +210,7 @@ fun DrawItem(
     onLongClick: () -> Unit,
     onClick: () -> Unit
 ) {
+    val context = LocalContext.current
     Card(
         modifier = Modifier
             .combinedClickable(
@@ -216,7 +224,7 @@ fun DrawItem(
         Column {
             CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.disabled) {
                 Image(
-                    painter = painterResource(id = R.drawable.empty_image),
+                    bitmap = draws.drawImage ?: BitmapFactory.decodeResource(context.resources, R.drawable.empty_image).asImageBitmap(),
                     contentDescription = "draw image",
                     modifier = Modifier.size(100.dp)
                 )

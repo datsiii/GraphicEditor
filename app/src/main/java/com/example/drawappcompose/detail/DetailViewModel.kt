@@ -1,15 +1,9 @@
 package com.example.drawappcompose.detail
 
-import android.content.Context
-import android.graphics.Bitmap
-import android.media.MediaScannerConnection
-import android.os.Environment
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.currentCompositionLocalContext
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
 import com.example.drawappcompose.models.DetailUiState
 import com.example.drawappcompose.models.Draws
@@ -17,9 +11,6 @@ import com.example.drawappcompose.models.PathData
 import com.example.drawappcompose.repository.StorageRepository
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseUser
-import java.io.File
-import java.io.FileOutputStream
-import java.io.IOException
 
 class DetailViewModel(
     private val repository: StorageRepository = StorageRepository(),
@@ -74,6 +65,7 @@ class DetailViewModel(
         repository.updateDraw(
             title = detailUiState.title,
             draw = detailUiState.draw,
+            drawImage = detailUiState.drawImage,
             drawId = drawId
         ) {
             detailUiState = detailUiState.copy(drawsUpdatedStatus = it)
@@ -90,7 +82,6 @@ class DetailViewModel(
     fun resetState() {
         detailUiState = DetailUiState()
     }
-
 
 
 }

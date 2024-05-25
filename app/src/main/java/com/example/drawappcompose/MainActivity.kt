@@ -29,7 +29,7 @@ import com.example.drawappcompose.home.HomeViewModel
 
 
 class MainActivity : ComponentActivity() {
-    @OptIn(ExperimentalComposeApi::class)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -41,7 +41,11 @@ class MainActivity : ComponentActivity() {
 
             DrawAppComposeTheme {
                 Column {
-                    Navigation(loginViewModel = loginViewModel, detailViewModel = detailViewModel, homeViewModel = homeViewModel)
+                    Navigation(
+                        loginViewModel = loginViewModel,
+                        detailViewModel = detailViewModel,
+                        homeViewModel = homeViewModel
+                    )
 
                 }
             }
