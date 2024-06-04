@@ -109,13 +109,15 @@ fun DetailScreen(
             val bitmapAsync = captureController.captureAsync()
             try {
                 val imageBitmap = bitmapAsync.await()
-                Toast.makeText(context, "download", Toast.LENGTH_SHORT).show()
+                //Toast.makeText(context, "download", Toast.LENGTH_SHORT).show()
                 // Do something with `bitmap`.
                 bitmap = imageBitmap.asAndroidBitmap()
+                // После захвата изображения вызываем функцию обновления drawImage в DetailViewModel
+                detailViewModel?.onDrawImageChange(imageBitmap)
                 saveBitmapToStorage(bitmap!!)
             } catch (error: Throwable) {
                 // Error occurred, do something.
-                Toast.makeText(context, "error", Toast.LENGTH_SHORT).show()
+                //Toast.makeText(context, "error", Toast.LENGTH_SHORT).show()
             }
         }
         return bitmap
@@ -146,8 +148,14 @@ fun DetailScreen(
                 .background(color = Color.White)
                 .padding(padding)
         ) {
+            val captureController = DrawCanvas(pathData, pathList)
+
             if (detailUiState.drawsAddedStatus) {
                 scope.launch {//это обман, оно запускается
+                    val capturedBitmap = capture(captureController)
+                    if (capturedBitmap != null) {
+                        detailViewModel?.onDrawImageChange(capturedBitmap.asImageBitmap())
+                    }
                     scaffoldState.snackbarHostState.showSnackbar("Added draw Successfully")
                     detailViewModel?.resetDrawAddedStatus()
                     onNavigate.invoke()
@@ -156,13 +164,17 @@ fun DetailScreen(
 
             if (detailUiState.drawsUpdatedStatus) {
                 scope.launch {
+                    val capturedBitmap = capture(captureController)
+                    if (capturedBitmap != null) {
+                        detailViewModel?.onDrawImageChange(capturedBitmap.asImageBitmap())
+                    }
                     scaffoldState.snackbarHostState.showSnackbar("Draw updated Successfully")
                     detailViewModel?.resetDrawAddedStatus()
                     onNavigate.invoke()
                 }
             }
 
-            val captureController = DrawCanvas(pathData, pathList)
+
 
             BottomPanel({ color ->
                 pathData.value = pathData.value.copy(
