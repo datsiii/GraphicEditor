@@ -38,6 +38,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.asAndroidBitmap
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
@@ -102,6 +103,24 @@ fun DetailScreen(
         }
     }
 
+    fun capture(captureController: CaptureController): Bitmap?{
+        var bitmap: Bitmap? = null
+        scope.launch {
+            val bitmapAsync = captureController.captureAsync()
+            try {
+                val imageBitmap = bitmapAsync.await()
+                Toast.makeText(context, "download", Toast.LENGTH_SHORT).show()
+                // Do something with `bitmap`.
+                bitmap = imageBitmap.asAndroidBitmap()
+                saveBitmapToStorage(bitmap!!)
+            } catch (error: Throwable) {
+                // Error occurred, do something.
+                Toast.makeText(context, "error", Toast.LENGTH_SHORT).show()
+            }
+        }
+        return bitmap
+    }
+
     Scaffold(
         //scaffoldState = scaffoldState
         floatingActionButton = {
@@ -144,6 +163,7 @@ fun DetailScreen(
             }
 
             val captureController = DrawCanvas(pathData, pathList)
+
             BottomPanel({ color ->
                 pathData.value = pathData.value.copy(
                     color = color
@@ -171,19 +191,8 @@ fun DetailScreen(
 
                 }) {
                 // Capture content
-                scope.launch {
-                    val bitmapAsync = captureController.captureAsync()
-                    try {
-                        val imageBitmap = bitmapAsync.await()
-                        Toast.makeText(context, "download", Toast.LENGTH_SHORT).show()
-                        // Do something with `bitmap`.
-                        val bitmap = imageBitmap.asAndroidBitmap()
-                        saveBitmapToStorage(bitmap)
-                    } catch (error: Throwable) {
-                        // Error occurred, do something.
-                        Toast.makeText(context, "error", Toast.LENGTH_SHORT).show()
-                    }
-                }
+                val cap = capture(captureController)
+                detailViewModel?.onDrawImageChange(cap!!.asImageBitmap())
             }
 
         }

@@ -7,7 +7,7 @@ import com.google.firebase.Timestamp
 data class Draws(
     val userId: String = "",
     val title: String = "",
-    val drawImage: ImageBitmap? = null,
+    var drawImage: String? = null,
     val timestamp: Timestamp = Timestamp.now(),
     val documentId: String = "",
 )

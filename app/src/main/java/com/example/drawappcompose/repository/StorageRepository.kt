@@ -1,8 +1,18 @@
 package com.example.drawappcompose.repository
 
+import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.drawable.Icon
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Face
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.platform.LocalContext
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.toBitmap
+import com.example.drawappcompose.R
 import com.example.drawappcompose.models.Draws
 import com.example.drawappcompose.models.PathData
 import com.google.firebase.Timestamp
@@ -15,8 +25,17 @@ import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import android.util.Base64
+import androidx.compose.ui.graphics.asAndroidBitmap
+import androidx.compose.ui.graphics.asImageBitmap
+import com.example.drawappcompose.Utils.imageBitmapToBase64
+import java.io.ByteArrayOutputStream
+
+
 
 const val DRAWS_COLLECTION_REF = "draws"
+
+
 
 class StorageRepository() {
     fun user() = Firebase.auth.currentUser
@@ -64,7 +83,8 @@ class StorageRepository() {
             .document(drawId)
             .get()
             .addOnSuccessListener {
-                onSuccess.invoke(it.toObject(Draws::class.java))
+                val draw = it.toObject(Draws::class.java)
+                onSuccess.invoke(draw)
             }
             .addOnFailureListener { result ->
                 onError.invoke(result.cause)
@@ -79,10 +99,11 @@ class StorageRepository() {
         onComplete: (Boolean) -> Unit,
     ) {
         val documentId = drawsRef.document().id
+        val drawImageBase64 = drawImage?.let { imageBitmapToBase64(it) }
         val draw = Draws(
             userId,
             title,
-            drawImage,
+            drawImageBase64,
             timestamp,
             documentId = documentId
         )
@@ -112,10 +133,11 @@ class StorageRepository() {
         drawId: String,
         onResult: (Boolean) -> Unit
     ) {
+        val drawImageBase64 = drawImage?.let { imageBitmapToBase64(it) } ?: ""
         val updateData = hashMapOf<String, Any>(
             "title" to title,
             "draw-data" to (draw?.value ?: ""),
-            "draw-image" to (drawImage ?: "")
+            "drawImage" to (drawImageBase64 ?: "")
         )
         drawsRef.document(drawId)
             .update(updateData)

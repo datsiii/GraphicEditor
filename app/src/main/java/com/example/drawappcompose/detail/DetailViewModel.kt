@@ -4,6 +4,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.lifecycle.ViewModel
 import com.example.drawappcompose.models.DetailUiState
 import com.example.drawappcompose.models.Draws
@@ -11,6 +12,17 @@ import com.example.drawappcompose.models.PathData
 import com.example.drawappcompose.repository.StorageRepository
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseUser
+import android.content.Context
+import androidx.compose.ui.platform.LocalContext
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.util.Base64
+import androidx.compose.ui.graphics.asAndroidBitmap
+import androidx.compose.ui.graphics.asImageBitmap
+import com.example.drawappcompose.Utils.base64ToImageBitmap
+import java.io.ByteArrayOutputStream
+
+
 
 class DetailViewModel(
     private val repository: StorageRepository = StorageRepository(),
@@ -26,6 +38,10 @@ class DetailViewModel(
         detailUiState = detailUiState.copy(title = title)
     }
 
+    fun onDrawImageChange(drawImage: ImageBitmap) {
+        detailUiState = detailUiState.copy(drawImage = drawImage)
+    }
+
     fun onDrawChange(draw: MutableState<PathData>) {
         detailUiState = detailUiState.copy(draw = draw)
     }
@@ -35,6 +51,7 @@ class DetailViewModel(
             repository.addDraw(
                 userId = user!!.uid,
                 title = detailUiState.title,
+                drawImage = detailUiState.drawImage,
                 timestamp = Timestamp.now()
             ) {
                 detailUiState = detailUiState.copy(drawsAddedStatus = it)
@@ -45,7 +62,7 @@ class DetailViewModel(
     fun setEdit(draw: Draws) {
         detailUiState = detailUiState.copy(
             title = draw.title,
-            //draw =
+            drawImage = draw.drawImage?.let { base64ToImageBitmap(it) }
         )
     }
 

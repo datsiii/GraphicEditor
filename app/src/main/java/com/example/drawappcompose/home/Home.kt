@@ -64,7 +64,12 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 
+import android.util.Base64
+import androidx.compose.ui.graphics.asAndroidBitmap
+import androidx.compose.ui.graphics.asImageBitmap
+import com.example.drawappcompose.Utils.base64ToImageBitmap
 import java.io.ByteArrayOutputStream
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -211,6 +216,7 @@ fun DrawItem(
     onClick: () -> Unit
 ) {
     val context = LocalContext.current
+    val imageBitmap = draws.drawImage?.let { base64ToImageBitmap(it) }
     Card(
         modifier = Modifier
             .combinedClickable(
@@ -223,17 +229,25 @@ fun DrawItem(
     ) {
         Column {
             CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.disabled) {
-                Image(
-                    bitmap = draws.drawImage ?: BitmapFactory.decodeResource(context.resources, R.drawable.empty_image).asImageBitmap(),
-                    contentDescription = "draw image",
-                    modifier = Modifier.size(100.dp)
-                )
+                if (imageBitmap != null) {
+                    Image(
+                        bitmap = imageBitmap,
+                        contentDescription = "draw image",
+                        modifier = Modifier.size(100.dp)
+                    )
+                } else {
+                    Image(
+                        painter = painterResource(id = R.drawable.empty_image),
+                        contentDescription = "draw image",
+                        modifier = Modifier.size(100.dp)
+                    )
+                }
             }
             Spacer(modifier = Modifier.size(4.dp))
             CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.disabled) {
                 Text(
                     text = formatDate(draws.timestamp),
-                    style = MaterialTheme.typography.headlineSmall,
+                    //style = MaterialTheme.typography.headlineSmall,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier
@@ -271,74 +285,3 @@ fun PrevHomeScreen() {
         }
     }
 }
-
-/*
-@OptIn(ExperimentalComposeUiApi::class)
-@Composable
-fun DrawCanvas(
-    pathData: MutableState<PathData>,
-    pathList: SnapshotStateList<PathData>
-): CaptureController {
-    var tempPath = Path()
-    val captureController = rememberCaptureController()
-    Column(modifier = Modifier.capturable(captureController)) {
-        Canvas(
-            modifier = Modifier
-                /*.drawWithContent {  }*/
-                .background(Color.White)
-                .fillMaxWidth()
-                .fillMaxHeight(0.73f)
-                .pointerInput(true) {
-                    detectDragGestures(
-                        onDragStart = {
-                            pathList.add(
-                                pathData.value.copy(
-                                    path = tempPath
-                                )
-                            )
-                            tempPath = Path()
-                        },
-                        onDragEnd = {
-                            pathList.add(
-                                pathData.value.copy(
-                                    path = tempPath
-                                )
-                            )
-                        }
-                    ) { change, dragAmount ->
-                        tempPath.moveTo(
-                            change.position.x - dragAmount.x,
-                            change.position.y - dragAmount.y
-                        )
-                        tempPath.lineTo(
-                            change.position.x,
-                            change.position.y
-                        )
-                        if (pathList.size > 0) {
-                            pathList.removeAt(pathList.size - 1)
-                        }
-                        pathList.add(
-                            pathData.value.copy(
-                                path = tempPath
-                            )
-                        )
-                    }
-                }
-        ) {
-            pathList.forEach { pathData ->
-                drawPath(
-                    pathData.path,
-                    color = pathData.color,
-                    style = Stroke(
-                        pathData.lineWidth,
-                        cap = pathData.cap
-                    ),
-                    alpha = pathData.alpha
-                )
-            }
-
-        }
-    }
-    return captureController
-
-}*/
