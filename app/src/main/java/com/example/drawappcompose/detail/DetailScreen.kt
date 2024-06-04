@@ -191,8 +191,10 @@ fun DetailScreen(
 
                 }) {
                 // Capture content
-                val cap = capture(captureController)
-                detailViewModel?.onDrawImageChange(cap!!.asImageBitmap())
+                val capturedBitmap = capture(captureController)
+                if (capturedBitmap != null) {
+                    detailViewModel?.onDrawImageChange(capturedBitmap.asImageBitmap())
+                }
             }
 
         }
