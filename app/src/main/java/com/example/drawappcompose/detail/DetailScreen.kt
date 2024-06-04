@@ -117,6 +117,7 @@ fun DetailScreen(
                 saveBitmapToStorage(bitmap!!)
             } catch (error: Throwable) {
                 // Error occurred, do something.
+
                 //Toast.makeText(context, "error", Toast.LENGTH_SHORT).show()
             }
         }
