@@ -17,6 +17,8 @@ import com.example.drawappcompose.login.LoginScreen
 import com.example.drawappcompose.login.LoginViewModel
 import com.example.drawappcompose.login.SignUpScreen
 import com.example.drawappcompose.detail.DetailScreen
+import com.example.drawappcompose.repository.StorageRepository
+import com.example.drawappcompose.ui.SplashScreen
 
 enum class LoginRoutes {
     SignUp,
@@ -33,21 +35,50 @@ enum class NestedRoutes {
     Login
 }
 
+enum class AppRoutes {
+    Splash
+}
+
 @Composable
 fun Navigation(
     navController: NavHostController = rememberNavController(),
     loginViewModel: LoginViewModel,
     detailViewModel: DetailViewModel,
-    homeViewModel: HomeViewModel
+    homeViewModel: HomeViewModel,
+    storageRepository: StorageRepository
 ) {
     NavHost(
         navController = navController,
-        startDestination = NestedRoutes.Main.name
+        //startDestination = NestedRoutes.Main.name
+        startDestination = AppRoutes.Splash.name
+
     ) {
+        splashGraph(navController, storageRepository)
         authGraph(navController, loginViewModel)
         homeGraph(navController = navController, detailViewModel, homeViewModel)
     }
 
+}
+
+fun NavGraphBuilder.splashGraph(
+    navController: NavHostController,
+    repository: StorageRepository
+) {
+    composable(route = AppRoutes.Splash.name) {
+        SplashScreen(
+            onTimeout = {
+                navController.navigate(NestedRoutes.Login.name) {
+                    popUpTo(AppRoutes.Splash.name) { inclusive = true }
+                }
+            },
+            onUserLoggedIn = {
+                navController.navigate(NestedRoutes.Main.name) {
+                    popUpTo(AppRoutes.Splash.name) { inclusive = true }
+                }
+            },
+            repository = repository
+        )
+    }
 }
 
 fun NavGraphBuilder.authGraph(

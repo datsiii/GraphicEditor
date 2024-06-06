@@ -26,6 +26,7 @@ import java.io.FileOutputStream
 import java.io.IOException
 import com.example.drawappcompose.detail.DrawCanvas
 import com.example.drawappcompose.home.HomeViewModel
+import com.example.drawappcompose.repository.StorageRepository
 
 
 class MainActivity : ComponentActivity() {
@@ -36,6 +37,7 @@ class MainActivity : ComponentActivity() {
             val loginViewModel = viewModel(modelClass = LoginViewModel::class.java)
             val detailViewModel = viewModel(modelClass = DetailViewModel::class.java)
             val homeViewModel = viewModel(modelClass = HomeViewModel::class.java)
+            val storageRepository = StorageRepository()
 
             val scope = rememberCoroutineScope()
 
@@ -44,7 +46,8 @@ class MainActivity : ComponentActivity() {
                     Navigation(
                         loginViewModel = loginViewModel,
                         detailViewModel = detailViewModel,
-                        homeViewModel = homeViewModel
+                        homeViewModel = homeViewModel,
+                        storageRepository = storageRepository
                     )
 
                 }
