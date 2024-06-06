@@ -56,7 +56,7 @@ fun SplashScreen(
             .fillMaxSize()
             .background(Color.White)
     ) {
-        Image(painter = painterResource(id = R.drawable.app),
+        Image(painter = painterResource(id = R.drawable.logo),
             contentDescription = "Logo",
             modifier = Modifier
                 .fillMaxSize(0.8f)
