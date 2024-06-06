@@ -65,9 +65,17 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 
 import android.util.Base64
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.displayCutoutPadding
 import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.unit.sp
 import com.example.drawappcompose.Utils.base64ToImageBitmap
+import com.example.drawappcompose.ui.theme.LightPurple
+import com.example.drawappcompose.ui.theme.MGray
 import java.io.ByteArrayOutputStream
 
 
@@ -93,6 +101,9 @@ fun Home(
     LaunchedEffect(key1 = Unit) {
         homeViewModel?.loadDraws()
     }
+    val fontFamily = FontFamily(
+        Font(R.font.museomodernoblack, FontWeight.ExtraBold)
+    )
 
     Scaffold(
         //scaffoldsState
@@ -116,15 +127,19 @@ fun Home(
                 title = {
                     Text(
                         text = "Your Pics",
-                        style = MaterialTheme.typography.headlineLarge,
+                        fontFamily = fontFamily,
+                        fontSize = 40.sp,
                         textAlign = TextAlign.Center
                     )
                 }
             )
         }
     ) { padding ->
+        Image(painterResource(id = R.drawable.screen), contentDescription = "", modifier = Modifier.fillMaxSize())
         Column(
-            modifier = Modifier.padding(padding)
+            modifier = Modifier
+                .padding(padding)
+                .background(Color.White)
         ) {
             when (homeUiState.drawList) {
                 is Resources.Loading -> {
@@ -161,7 +176,8 @@ fun Home(
                             onDismissRequest = {
                                 openDialog = false
                             },
-                            title = { Text(text = "Delete Note?") },
+                            title = { Text(text = "Delete Note?",
+                                fontFamily = fontFamily) },
                             confirmButton = {
                                 Button(
                                     onClick = {
@@ -174,12 +190,14 @@ fun Home(
                                         //contentColor = Color.Red
                                     ),
                                 ) {
-                                    Text(text = "Delete")
+                                    Text(text = "Delete",
+                                        fontFamily = fontFamily)
                                 }
                             },
                             dismissButton = {
                                 Button(onClick = { openDialog = false }) {
-                                    Text(text = "Cancel")
+                                    Text(text = "Cancel",
+                                        fontFamily = fontFamily)
                                 }
                             }
                         )
@@ -217,6 +235,9 @@ fun DrawItem(
 ) {
     val context = LocalContext.current
     val imageBitmap = draws.drawImage?.let { base64ToImageBitmap(it) }
+    val fontFamily = FontFamily(
+        Font(R.font.museomodernoblack, FontWeight.ExtraBold)
+    )
     Card(
         modifier = Modifier
             .combinedClickable(
@@ -230,10 +251,13 @@ fun DrawItem(
         Column {
             CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.disabled) {
                 if (imageBitmap != null) {
+                    Spacer(modifier = Modifier.size(10.dp))
                     Image(
                         bitmap = imageBitmap,
                         contentDescription = "draw image",
-                        modifier = Modifier.size(100.dp)
+                        modifier = Modifier
+                            .size(100.dp)
+                            .align(Alignment.CenterHorizontally)
                     )
                 } else {
                     Image(
@@ -250,20 +274,22 @@ fun DrawItem(
                     //style = MaterialTheme.typography.headlineSmall,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
+                    fontFamily = fontFamily,
+                    color = Color.Gray,
                     modifier = Modifier
                         .padding(4.dp)
                         .align(Alignment.End)
                 )
             }
             Spacer(modifier = Modifier.size(4.dp))
-            Text(
+            /*Text(
                 text = draws.title,
                 style = MaterialTheme.typography.headlineMedium,
                 fontWeight = FontWeight.Bold,
                 maxLines = 1,
                 overflow = TextOverflow.Clip,
                 modifier = Modifier.padding(4.dp)
-            )
+            )*/
 
         }
 

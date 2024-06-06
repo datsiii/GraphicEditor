@@ -31,6 +31,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.drawappcompose.R
 import com.example.drawappcompose.ui.theme.LightPurple
@@ -53,12 +56,12 @@ fun BottomPanel(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-        ColorList{ color->
+        ColorList { color ->
             onClick(color)
         }
-        CustomSlider({lineWidth ->
+        CustomSlider({ lineWidth ->
             onLineWidthChange(lineWidth)
-        }){alpha ->
+        }) { alpha ->
             onChangeTransparency(alpha)
         }
         ButtonPanel(
@@ -68,7 +71,7 @@ fun BottomPanel(
             {
                 onDownloadClick()
             }
-        ) {cap ->
+        ) { cap ->
             onCapClick(cap)
         }
         Spacer(modifier = Modifier.height(5.dp))
@@ -77,7 +80,7 @@ fun BottomPanel(
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun ColorList(onClick:(Color)->Unit) {
+fun ColorList(onClick: (Color) -> Unit) {
     var pickedColor = Color.Black
     /*ColorPicker(
         type = ColorPickerType.Ring(
@@ -114,16 +117,20 @@ fun ColorList(onClick:(Color)->Unit) {
         }
     }
 }
+
 @Composable
 fun CustomSlider(
     onChangeWidth: (Float) -> Unit,
     onChangeTransparency: (Float) -> Unit
-){
+) {
+    val fontFamily = FontFamily(
+        Font(R.font.museomodernoblack, FontWeight.ExtraBold)
+    )
     var positionw by remember {
         mutableStateOf(0.05f)
     }
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Text("Line width: ${(positionw * 100).toInt()}")
+        Text("Line width: ${(positionw * 100).toInt()}", fontFamily = fontFamily, color = Color.DarkGray)
         Slider(
             value = positionw,
             onValueChange = {
@@ -137,7 +144,7 @@ fun CustomSlider(
         mutableStateOf(1f)
     }
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Text("Transparency: ${(positiona * 100).toInt()}")
+        Text("Transparency: ${(positiona * 100).toInt()}", fontFamily = fontFamily, color = Color.DarkGray)
         Slider(
             value = positiona,
             onValueChange = {
@@ -153,8 +160,8 @@ fun CustomSlider(
 fun ButtonPanel(
     onClick: () -> Unit,
     onDownloadClick: () -> Unit,
-    onCapClick: (StrokeCap) -> Unit)
-{
+    onCapClick: (StrokeCap) -> Unit
+) {
     Row(
         Modifier.fillMaxWidth()
     ) {
@@ -193,7 +200,7 @@ fun ButtonPanel(
             Modifier
                 .fillMaxWidth()
                 .padding(end = 10.dp),
-            horizontalArrangement = Arrangement.SpaceEvenly
+            horizontalArrangement = Arrangement.Absolute.Left
         ) {
             IconButton(
                 /*modifier = Modifier

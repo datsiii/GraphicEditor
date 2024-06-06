@@ -77,12 +77,12 @@ fun LoginScreen(
                 .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Spacer(modifier = Modifier.size(300.dp))
+            Spacer(modifier = Modifier.size(400.dp))
             val fontFamily = FontFamily(
                 Font(R.font.museomodernoblack, FontWeight.ExtraBold)
             )
             Text(
-                text = "Login",
+                text = "Sign In",
                 style = TextStyle(
                     fontFamily = fontFamily,
                     fontWeight = FontWeight.ExtraBold,
@@ -222,7 +222,7 @@ fun SignUpScreen(
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.size(300.dp))
+            Spacer(modifier = Modifier.size(400.dp))
             val fontFamily = FontFamily(
                 Font(R.font.museomodernoblack, FontWeight.ExtraBold)
             )
