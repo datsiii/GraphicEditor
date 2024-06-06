@@ -42,8 +42,8 @@ class DetailViewModel(
         detailUiState = detailUiState.copy(drawImage = drawImage)
     }
 
-    fun onDrawChange(draw: MutableState<PathData>) {
-        detailUiState = detailUiState.copy(draw = draw)
+    fun onDrawChange(pathData: PathData) {
+        //detailUiState = detailUiState.copy(pathData = pathData)
     }
 
     fun addDraw() {
@@ -52,6 +52,7 @@ class DetailViewModel(
                 userId = user!!.uid,
                 title = detailUiState.title,
                 drawImage = detailUiState.drawImage,
+                //pathData = detailUiState.pathData,
                 timestamp = Timestamp.now()
             ) {
                 detailUiState = detailUiState.copy(drawsAddedStatus = it)
@@ -81,7 +82,8 @@ class DetailViewModel(
     ) {
         repository.updateDraw(
             title = detailUiState.title,
-            draw = detailUiState.draw,
+            //draw = detailUiState.draw,
+            //pathData = detailUiState.pathData,
             drawImage = detailUiState.drawImage,
             drawId = drawId
         ) {

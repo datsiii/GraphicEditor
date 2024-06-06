@@ -6,8 +6,9 @@ import androidx.compose.ui.graphics.ImageBitmap
 
 data class DetailUiState(
     val title: String = "",
-    val draw: MutableState<PathData>? = null,
+    //val draw: MutableState<PathData>? = null,
     val drawImage: ImageBitmap? = null,
+    //val pathData: PathData? = null,
     val drawsAddedStatus: Boolean = false,
     val drawsUpdatedStatus: Boolean = false,
     val selectedDraw: Draws? = null

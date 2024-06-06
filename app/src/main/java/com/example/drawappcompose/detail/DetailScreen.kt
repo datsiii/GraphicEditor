@@ -103,7 +103,7 @@ fun DetailScreen(
         }
     }
 
-    fun capture(captureController: CaptureController): Bitmap?{
+    fun capture(captureController: CaptureController, save: Boolean): Bitmap? {
         var bitmap: Bitmap? = null
         scope.launch {
             val bitmapAsync = captureController.captureAsync()
@@ -114,7 +114,9 @@ fun DetailScreen(
                 bitmap = imageBitmap.asAndroidBitmap()
                 // После захвата изображения вызываем функцию обновления drawImage в DetailViewModel
                 detailViewModel?.onDrawImageChange(imageBitmap)
-                saveBitmapToStorage(bitmap!!)
+                if (save) {
+                    saveBitmapToStorage(bitmap!!)
+                }
             } catch (error: Throwable) {
                 // Error occurred, do something.
 
@@ -153,21 +155,29 @@ fun DetailScreen(
 
             if (detailUiState.drawsAddedStatus) {
                 scope.launch {//это обман, оно запускается
-                    val capturedBitmap = capture(captureController)
+                    val capturedBitmap = capture(captureController, false)
                     if (capturedBitmap != null) {
                         detailViewModel?.onDrawImageChange(capturedBitmap.asImageBitmap())
+                        //detailViewModel?.onDrawChange(pathData.value)
                     }
                     scaffoldState.snackbarHostState.showSnackbar("Added draw Successfully")
                     detailViewModel?.resetDrawAddedStatus()
                     onNavigate.invoke()
                 }
+            } else {
+                val capturedBitmap = capture(captureController, false)
+                if (capturedBitmap != null) {
+                    detailViewModel?.onDrawImageChange(capturedBitmap.asImageBitmap())
+                    //detailViewModel?.onDrawChange(pathData.value)
+                }
             }
 
             if (detailUiState.drawsUpdatedStatus) {
                 scope.launch {
-                    val capturedBitmap = capture(captureController)
+                    val capturedBitmap = capture(captureController, false)
                     if (capturedBitmap != null) {
                         detailViewModel?.onDrawImageChange(capturedBitmap.asImageBitmap())
+                        //detailViewModel?.onDrawChange(pathData.value)
                     }
                     scaffoldState.snackbarHostState.showSnackbar("Draw updated Successfully")
                     detailViewModel?.resetDrawAddedStatus()
@@ -204,7 +214,7 @@ fun DetailScreen(
 
                 }) {
                 // Capture content
-                val capturedBitmap = capture(captureController)
+                val capturedBitmap = capture(captureController, true)
                 if (capturedBitmap != null) {
                     detailViewModel?.onDrawImageChange(capturedBitmap.asImageBitmap())
                 }

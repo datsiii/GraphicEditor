@@ -8,6 +8,7 @@ data class Draws(
     val userId: String = "",
     val title: String = "",
     var drawImage: String? = null,
+    //var pathData: PathData? = null,
     val timestamp: Timestamp = Timestamp.now(),
     val documentId: String = "",
 )

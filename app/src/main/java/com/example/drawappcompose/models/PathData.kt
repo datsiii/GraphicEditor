@@ -10,4 +10,6 @@ data class PathData(
     val lineWidth: Float = 5f,
     val cap: StrokeCap = StrokeCap.Round,
     val alpha: Float = 1f
-)
+){
+    constructor() : this(Path(), Color.Black, 5f, StrokeCap.Round, 1f)
+}

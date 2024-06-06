@@ -95,6 +95,7 @@ class StorageRepository() {
         userId: String = "",
         title: String = "",
         drawImage: ImageBitmap? = null,
+        pathData: PathData? = null,
         timestamp: Timestamp = com.google.firebase.Timestamp.now(),
         onComplete: (Boolean) -> Unit,
     ) {
@@ -104,6 +105,7 @@ class StorageRepository() {
             userId,
             title,
             drawImageBase64,
+            //pathData,
             timestamp,
             documentId = documentId
         )
@@ -128,16 +130,18 @@ class StorageRepository() {
 
     fun updateDraw(
         title: String,
-        draw: MutableState<PathData>?,
+        //draw: MutableState<PathData>?,
         drawImage: ImageBitmap?,
+        //pathData: PathData?,
         drawId: String,
         onResult: (Boolean) -> Unit
     ) {
         val drawImageBase64 = drawImage?.let { imageBitmapToBase64(it) } ?: ""
         val updateData = hashMapOf<String, Any>(
             "title" to title,
-            "draw-data" to (draw?.value ?: ""),
-            "drawImage" to (drawImageBase64 ?: "")
+            //"draw-data" to (draw?.value ?: ""),
+            "drawImage" to (drawImageBase64 ?: ""),
+            //"pathData" to (pathData ?: PathData())
         )
         drawsRef.document(drawId)
             .update(updateData)
